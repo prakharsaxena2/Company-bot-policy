@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Company AI Chatbot</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #eef4ff 0%, #f7fafc 100%);
+    }
+
+    header {
+      padding: 4rem 1.5rem 3rem;
+      text-align: center;
+      background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      letter-spacing: -0.04em;
+    }
+
+    header p {
+      max-width: 760px;
+      margin: 1rem auto 0;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.05rem;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .section {
+      padding: 3rem 0;
+    }
+
+    .section h2 {
+      font-size: clamp(1.75rem, 2.4vw, 2.4rem);
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+
+    .section p {
+      max-width: 740px;
+      line-height: 1.8;
+      color: #4b5563;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      border-radius: 24px;
+      background: white;
+      padding: 1.75rem;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+      color: #111827;
+    }
+
+    .chatbot-toggle {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      z-index: 30;
+    }
+
+    .chatbot-toggle button {
+      border: none;
+      border-radius: 999px;
+      background: #4f46e5;
+      color: white;
+      padding: 0.95rem 1.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 18px 30px rgba(79, 70, 229, 0.18);
+    }
+
+    .chat-panel {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 6rem;
+      width: min(380px, calc(100vw - 2rem));
+      max-height: calc(100vh - 5rem);
+      display: none;
+      flex-direction: column;
+      border-radius: 24px;
+      background: white;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.18);
+      overflow: hidden;
+      z-index: 29;
+    }
+
+    .chat-panel.open {
+      display: flex;
+    }
+
+    .chat-header {
+      padding: 1rem 1.2rem;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .chat-header h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #111827;
+    }
+
+    .chat-close {
+      border: none;
+      background: transparent;
+      font-size: 1.3rem;
+      color: #6b7280;
+      cursor: pointer;
+    }
+
+    .chat-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1rem;
+      flex: 1;
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+      min-height: 260px;
+      max-height: 320px;
+    }
+
+    .message {
+      display: inline-flex;
+      max-width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #eef2ff;
+      color: #1e3a8a;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .chat-form input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      padding: 0.85rem 1rem;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .chat-form button {
+      border: none;
+      border-radius: 999px;
+      background: #2563eb;
+      color: white;
+      padding: 0 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      color: #475569;
+      min-height: 1.2rem;
+    }
+
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 720px) {
+      header {
+        padding: 3rem 1rem 2rem;
+      }
+
+      .chat-panel {
+        bottom: 5.5rem;
+        width: calc(100vw - 1.5rem);
+        right: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <p style="text-transform: uppercase; letter-spacing: 0.25em; opacity: 0.9; font-weight: 700;">Company AI Assistant</p>
+      <h1>Connect with your company knowledge instantly.</h1>
+      <p>Ask questions about products, policies, teams, or internal documents. The embedded chatbot retrieves the most relevant company information and answers in real time.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section" id="about">
+      <h2>About Our Company</h2>
+      <p>We build modern enterprise experiences that help teams move faster, reduce friction, and make better decisions. Our mission is to empower employees and customers with accurate company knowledge whenever they need it.</p>
+    </section>
+
+    <section class="section" id="highlights">
+      <h2>Why choose us?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Trusted Expertise</h3>
+          <p>Our solutions are powered by advanced retrieval and generative AI to answer company-specific questions with relevant context.</p>
+        </div>
+        <div class="card">
+          <h3>Faster Access</h3>
+          <p>Employees can quickly get answers from internal documents, manuals, or policies without searching through files manually.</p>
+        </div>
+        <div class="card">
+          <h3>Secure Deployment</h3>
+          <p>Runs on our backend with your environment variables, keeping API keys and company data safe from the browser.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <h2>Services we support</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Product information</h3>
+          <p>Ask about product features, functionality, and release details directly from your company knowledge base.</p>
+        </div>
+        <div class="card">
+          <h3>Policy and compliance</h3>
+          <p>Receive consistent answers to HR, security, and compliance questions using your indexed internal documents.</p>
+        </div>
+        <div class="card">
+          <h3>Onboarding assistance</h3>
+          <p>New team members can onboard faster with direct access to company norms, processes, and support information.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <h2>Ready to ask a question?</h2>
+      <p>Open the chatbot and ask anything about your company documentation and internal knowledge. The same retrieval-based AI logic from the command-line experience is now available in a browser interface.</p>
+    </section>
+  </main>
+
+  <div class="chatbot-toggle">
+    <button id="openChatBtn">Open Chat</button>
+  </div>
+
+  <div class="chat-panel" id="chatPanel" aria-hidden="true">
+    <div class="chat-header">
+      <div>
+        <h3>Company Chatbot</h3>
+        <p style="margin:0; font-size:0.95rem; color:#64748b;">Ask your company questions below.</p>
+      </div>
+      <button class="chat-close" id="closeChatBtn" aria-label="Close chat">✕</button>
+    </div>
+    <div class="chat-body">
+      <div class="messages" id="messages"></div>
+      <form class="chat-form" id="chatForm">
+        <input id="chatInput" type="text" autocomplete="off" placeholder="Enter your question..." required />
+        <button type="submit">Send</button>
+      </form>
+      <div class="status" id="chatStatus"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built to mirror the command-line company chatbot and make it accessible through a browser page.
+  </div>
+
+  <script>
+    const openChatBtn = document.getElementById('openChatBtn');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const messages = document.getElementById('messages');
+    const chatStatus = document.getElementById('chatStatus');
+
+    function setChatOpen(isOpen) {
+      chatPanel.classList.toggle('open', isOpen);
+      chatPanel.setAttribute('aria-hidden', String(!isOpen));
+      if (isOpen) {
+        chatInput.focus();
+      }
+    }
+
+    function appendMessage(role, text) {
+      const message = document.createElement('div');
+      message.className = `message ${role === 'user' ? 'user' : 'bot'}`;
+      message.textContent = text;
+      messages.appendChild(message);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendQuestion(question) {
+      chatStatus.textContent = 'Thinking...';
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Unable to reach chatbot');
+        }
+
+        appendMessage('bot', data.answer || 'No answer returned.');
+        chatStatus.textContent = 'Response received.';
+      } catch (error) {
+        appendMessage('bot', `Error: ${error.message}`);
+        chatStatus.textContent = 'There was a problem sending your question.';
+      }
+    }
+
+    openChatBtn.addEventListener('click', () => setChatOpen(true));
+    closeChatBtn.addEventListener('click', () => setChatOpen(false));
+
+    chatForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const question = chatInput.value.trim();
+      if (!question) return;
+      appendMessage('user', question);
+      chatInput.value = '';
+      sendQuestion(question);
+    });
+  </script>
+</body>
+</html>
