@@ -156,6 +156,33 @@
       flex: 1;
     }
 
+    .upload-section {
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      padding-top: 1rem;
+    }
+
+    .upload-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .upload-form input[type="file"] {
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .upload-form button {
+      border: none;
+      border-radius: 6px;
+      background: #10b981;
+      color: white;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
     .messages {
       display: flex;
       flex-direction: column;
@@ -293,6 +320,13 @@
     <section class="section" id="contact">
       <h2>Ready to ask a question?</h2>
       <p>Open the chatbot and ask anything about your company documentation and internal knowledge. The same retrieval-based AI logic from the command-line experience is now available in a browser interface.</p>
+      <div class="upload-section">
+        <h3>Upload a Document</h3>
+        <form class="upload-form" id="uploadForm" enctype="multipart/form-data">
+          <input type="file" id="fileInput" name="document" accept=".pdf" required />
+          <button type="submit">Upload Document</button>
+        </form>
+      </div>
     </section>
   </main>
 
@@ -323,13 +357,56 @@
   </div>
 
   <script>
+    console.log('Script loaded');
     const openChatBtn = document.getElementById('openChatBtn');
     const closeChatBtn = document.getElementById('closeChatBtn');
     const chatPanel = document.getElementById('chatPanel');
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
     const messages = document.getElementById('messages');
     const chatStatus = document.getElementById('chatStatus');
+
+    async function uploadDocument(formData) {
+      console.log('Starting upload...');
+      chatStatus.textContent = 'Uploading and indexing document...';
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        console.log('Upload response:', response.status);
+        const data = await response.json();
+        console.log('Upload data:', data);
+        if (!response.ok) {
+          throw new Error(data.error || 'Upload failed');
+        }
+
+        appendMessage('bot', data.message || 'Document uploaded and indexed.');
+        chatStatus.textContent = 'Document ready for questions.';
+        // Clear previous chat messages
+        messages.innerHTML = '';
+      } catch (error) {
+        console.error('Upload error:', error);
+        appendMessage('bot', `Upload error: ${error.message}`);
+        chatStatus.textContent = 'Upload failed.';
+      }
+    }
+
+    uploadForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      console.log('Form submitted');
+      if (!fileInput.files.length) {
+        console.log('No file selected');
+        alert('Please select a file first.');
+        return;
+      }
+      const formData = new FormData(uploadForm);
+      console.log('Sending upload request');
+      uploadDocument(formData);
+      fileInput.value = '';
+    });
 
     function setChatOpen(isOpen) {
       chatPanel.classList.toggle('open', isOpen);

@@ -6,6 +6,7 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
 
 - Company landing page with chatbot access
 - Floating open/close chatbot panel
+- File upload to index custom PDF documents
 - POST `/api/chat` endpoint for sending questions
 - Retrieval-based answers using indexed company docs
 
@@ -33,6 +34,8 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
    ```text
    http://localhost:3000
    ```
+
+5. Upload a PDF document via the chatbot panel to index it for questions.
 
 ## Notes
 
