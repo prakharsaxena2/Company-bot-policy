@@ -18,6 +18,7 @@
     "@langchain/textsplitters": "^1.0.1",
     "@napi-rs/canvas": "^0.1.100",
     "@pinecone-database/pinecone": "^5.1.2",
+    "canvas": "^3.2.3",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "groq-sdk": "^1.1.2",

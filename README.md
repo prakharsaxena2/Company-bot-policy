@@ -10,6 +10,13 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
 - POST `/api/chat` endpoint for sending questions
 - Retrieval-based answers using indexed company docs
 
+## Dependencies
+
+- Node.js with ES modules
+- OpenAI API key (for embeddings)
+- Pinecone account (for vector storage)
+- Groq API key (for chat completion)
+
 ## Setup
 
 1. Install dependencies:
