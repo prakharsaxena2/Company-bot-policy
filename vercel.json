@@ -3,7 +3,18 @@
   "builds": [
     {
       "src": "api/**/*.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "node_modules/@napi-rs/canvas/**",
+          "node_modules/canvas/**",
+          "node_modules/pdf-parse/**",
+          "node_modules/pdfjs-dist/**",
+          "node_modules/**/*.node",
+          "node_modules/**/*.so",
+          "node_modules/**/*.dylib"
+        ]
+      }
     }
   ],
   "routes": [
@@ -18,7 +29,25 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "includeFiles": [
+        "node_modules/@napi-rs/canvas/**",
+        "node_modules/canvas/**",
+        "node_modules/pdf-parse/**",
+        "node_modules/pdfjs-dist/**",
+        "node_modules/**/*.node",
+        "node_modules/**/*.so",
+        "node_modules/**/*.dylib"
+      ],
+      "env": {
+        "NODE_OPTIONS": "--experimental-modules",
+        "CANVAS_SKIP_SYSTEM_FONTS": "1",
+        "CANVAS_SKIP_SYSTEM_FONTS_LOAD": "1",
+        "FONTCONFIG_PATH": "/tmp",
+        "CANVAS_FONT_CACHE_DIR": "/tmp",
+        "CANVAS_DISABLE_CACHE": "1",
+        "CANVAS_DISABLE_SYSTEM_FONTS": "1"
+      }
     }
   }
 }

@@ -4,13 +4,15 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "build": "npm rebuild @napi-rs/canvas canvas && echo 'Build complete'",
+    "postinstall": "npm rebuild @napi-rs/canvas canvas",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "22.x"
+    "node": "18.x"
   },
   "description": "",
   "dependencies": {
@@ -21,6 +23,7 @@
     "@langchain/textsplitters": "^1.0.1",
     "@napi-rs/canvas": "^0.1.100",
     "@pinecone-database/pinecone": "^5.1.2",
+    "@vercel/node": "^5.7.13",
     "canvas": "^3.2.3",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",

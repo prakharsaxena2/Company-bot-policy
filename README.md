@@ -19,6 +19,8 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
 
 ## Deployment to Vercel
 
+**Important**: This project uses native dependencies (`@napi-rs/canvas`, `canvas`) for PDF parsing. The `vercel.json` and `package.json` are configured to ensure these dependencies are properly bundled.
+
 1. **Install Vercel CLI**:
    ```bash
    npm install -g vercel
@@ -29,19 +31,19 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
    vercel
    ```
 
-3. **Set Environment Variables** in Vercel dashboard or via CLI:
-   ```bash
-   vercel env add GROQ_API_KEY
-   vercel env add OPENAI_API_KEY
-   vercel env add PINECONE_API_KEY
-   vercel env add PINECONE_INDEX_NAME
-   vercel env add PINECONE_ENVIRONMENT
-   ```
+3. **Set Environment Variables** in Vercel dashboard:
+   - `GROQ_API_KEY`
+   - `OPENAI_API_KEY`
+   - `PINECONE_API_KEY`
+   - `PINECONE_INDEX_NAME`
+   - `PINECONE_ENVIRONMENT`
 
 4. **Redeploy** after setting environment variables:
    ```bash
    vercel --prod
    ```
+
+**Note**: If you encounter canvas-related errors during deployment, the configuration includes multiple fallback mechanisms to ensure native dependencies are properly loaded.
 
 ## Local Development
 
