@@ -17,7 +17,35 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
 - Pinecone account (for vector storage)
 - Groq API key (for chat completion)
 
-## Setup
+## Deployment to Vercel
+
+1. **Install Vercel CLI**:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy to Vercel**:
+   ```bash
+   vercel
+   ```
+
+3. **Set Environment Variables** in Vercel dashboard or via CLI:
+   ```bash
+   vercel env add GROQ_API_KEY
+   vercel env add OPENAI_API_KEY
+   vercel env add PINECONE_API_KEY
+   vercel env add PINECONE_INDEX_NAME
+   vercel env add PINECONE_ENVIRONMENT
+   ```
+
+4. **Redeploy** after setting environment variables:
+   ```bash
+   vercel --prod
+   ```
+
+## Local Development
+
+## Local Development
 
 1. Install dependencies:
    ```bash
@@ -27,9 +55,10 @@ A simple company knowledge chatbot with a browser UI and backend retrieval power
 2. Create a `.env` file in the project root with at least:
    ```env
    GROQ_API_KEY=your_groq_api_key
+   OPENAI_API_KEY=your_openai_api_key
    PINECONE_API_KEY=your_pinecone_api_key
-   PINECONE_ENVIRONMENT=your_pinecone_environment
    PINECONE_INDEX_NAME=your_pinecone_index_name
+   PINECONE_ENVIRONMENT=your_pinecone_environment
    ```
 
 3. Start the app:
